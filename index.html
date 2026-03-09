@@ -128,160 +128,303 @@
             border-top: 1px solid #1a1a2e;
             display: flex;
             gap: 12px;
+        }<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus AI | v5.0 Enterprise</title>
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --sidebar-bg: #0a0d14;
+            --accent-blue: #00d2ff;
+            --accent-glow: rgba(0, 210, 255, 0.4);
+            --text-main: #e0e6ed;
+            --text-dim: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover {
+            background: var(--glass);
+            color: white;
+        }
+
+        /* --- MAIN CHAT AREA --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        #chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 10%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            scroll-behavior: smooth;
+        }
+
+        /* --- MESSAGES --- */
+        .message {
+            display: flex;
+            gap: 15px;
+            max-width: 850px;
+            width: 100%;
+            margin: 0 auto;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .nexus-avatar { background: var(--accent-blue); color: #000; box-shadow: 0 0 15px var(--accent-glow); }
+        .user-avatar { background: #334155; color: white; }
+
+        .content {
+            line-height: 1.7;
+            font-size: 1rem;
+            color: var(--text-main);
+            padding-top: 5px;
+        }
+
+        /* --- INPUT AREA --- */
+        .input-container {
+            padding: 30px 10%;
+            background: linear-gradient(transparent, var(--bg-dark));
+        }
+
+        .input-wrapper {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         input {
             flex: 1;
-            background: #000;
-            border: 1px solid #222;
-            padding: 14px;
-            color: var(--nexus-blue);
-            border-radius: 4px;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px;
             outline: none;
+            font-size: 1rem;
         }
 
         button {
-            background: var(--nexus-blue);
-            color: #000;
+            background: var(--accent-blue);
             border: none;
-            padding: 0 20px;
-            border-radius: 4px;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 900;
-            transition: 0.3s;
         }
 
         button:hover {
-            background: #fff;
-            box-shadow: 0 0 15px var(--nexus-blue);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        #voice-btn {
-            background: #1a1a2e;
-            color: var(--nexus-blue);
-            border: 1px solid var(--nexus-blue);
+        /* --- AUTH OVERLAY --- */
+        #auth-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 7, 10, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(8px);
         }
 
-        #voice-btn.listening {
-            background: #ff4444;
-            color: white;
-            border-color: #ff4444;
-            box-shadow: 0 0 15px #ff4444;
+        .auth-card {
+            background: var(--sidebar-bg);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
         }
+
+        .auth-card h2 { margin-top: 0; color: var(--accent-blue); }
+        .auth-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 25px; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
-
 <body>
 
-    <div class="terminal-container">
-        <header>
-            <h1>Nexus AI</h1>
-            <div class="system-status">
-                <div class="pulse"></div> VOICE_LINK_READY
+    <nav>
+        <div class="logo"><span>❖</span> NEXUS AI</div>
+        <div class="nav-item">＋ New Chat</div>
+        <div class="nav-item">🕒 History</div>
+        <div class="nav-item" style="margin-top: auto;">⚙ Settings</div>
+    </nav>
+
+    <main>
+        <div id="auth-overlay">
+            <div class="auth-card">
+                <h2>Initialize Nexus</h2>
+                <p>Enter your Gemini API key to establish a secure link with the neural core.</p>
+                <input type="password" id="api-key-input" placeholder="Paste API Key here..." 
+                       style="width: 100%; border: 1px solid var(--border); margin-bottom: 20px; border-radius: 8px;">
+                <button onclick="unlockNexus()" style="width: 100%;">Connect System</button>
             </div>
+        </div>
+
+        <header>
+            <div id="model-badge" style="font-size: 0.8rem; color: var(--text-dim);">MODEL: GEMINI_FLASH_1.5</div>
+            <div style="color: #00ff88; font-size: 0.8rem; font-weight: bold;">● CORE_ACTIVE</div>
         </header>
 
-        <main id="chat-window">
-            <div class="bubble nexus-msg">Nexus v3.5 online. Voice synthesis active. Click the microphone or type to
-                begin.</div>
-        </main>
+        <div id="chat-window">
+            <div class="message">
+                <div class="avatar nexus-avatar">NX</div>
+                <div class="content">Systems standby. Awaiting authentication...</div>
+            </div>
+        </div>
 
-        <footer>
-            <button id="voice-btn" title="Voice Input">🎤</button>
-            <input type="text" id="user-input" placeholder="Awaiting input..." autocomplete="off">
-            <button id="submit-btn">Execute</button>
-        </footer>
-    </div>
+        <div class="input-container">
+            <div class="input-wrapper">
+                <input type="text" id="user-input" placeholder="Message Nexus AI..." autocomplete="off">
+                <button onclick="sendMessage()">Transmit</button>
+            </div>
+        </div>
+    </main>
 
     <script>
-        const API_KEY = "[[API_KEY_PLACEHOLDER]]";
-        const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        let KEY = "";
 
-        const chatWindow = document.getElementById('chat-window');
-        const userInput = document.getElementById('user-input');
-        const submitBtn = document.getElementById('submit-btn');
-        const voiceBtn = document.getElementById('voice-btn');
-
-        // --- VOICE RECOGNITION SETUP ---
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-US';
-
-            voiceBtn.addEventListener('click', () => {
-                recognition.start();
-                voiceBtn.classList.add('listening');
-            });
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                userInput.value = transcript;
-                voiceBtn.classList.remove('listening');
-                processNexusQuery(); // Auto-send after voice finish
-            };
-
-            recognition.onspeechend = () => {
-                recognition.stop();
-                voiceBtn.classList.remove('listening');
-            };
-
-            recognition.onerror = () => {
-                voiceBtn.classList.remove('listening');
-                alert("Voice Error: Microphone access denied or not found.");
-            };
-        } else {
-            voiceBtn.style.display = "none";
-            console.log("Speech Recognition not supported in this browser.");
-        }
-
-        // --- CORE CHAT LOGIC ---
-        async function processNexusQuery() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            renderMessage(text, 'user');
-            userInput.value = '';
-            const loaderId = renderMessage('Deciphering frequency...', 'nexus');
-
-            try {
-                if (API_KEY.includes("PLACEHOLDER")) throw new Error("API Key Missing.");
-
-                const response = await fetch(ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
-                });
-
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                document.getElementById(loaderId).innerText = aiText;
-
-                // Optional: Make Nexus "speak" back
-                const speech = new SpeechSynthesisUtterance(aiText);
-                window.speechSynthesis.speak(speech);
-
-            } catch (err) {
-                document.getElementById(loaderId).innerText = `SYSTEM ERROR: ${err.message}`;
+        function unlockNexus() {
+            const input = document.getElementById('api-key-input').value.trim();
+            if(input.startsWith('AIza')) {
+                KEY = input;
+                document.getElementById('auth-overlay').classList.add('hidden');
+                addMessage("nexus", "Authentication successful. Neural link established. How can I assist you today?");
+            } else {
+                alert("Invalid API Key format. Keys typically start with 'AIza'.");
             }
         }
 
-        function renderMessage(text, type) {
-            const id = 'id-' + Math.random().toString(36).substr(2, 16);
-            const div = document.createElement('div');
-            div.className = `bubble ${type}-msg`;
-            div.id = id;
-            div.innerText = text;
-            chatWindow.appendChild(div);
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const prompt = inputField.value.trim();
+            if (!prompt || !KEY) return;
+
+            addMessage("user", prompt);
+            inputField.value = '';
+            
+            const loaderId = addMessage("nexus", "Thinking...");
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await response.json();
+                const aiText = data.candidates[0].content.parts[0].text;
+                
+                document.getElementById(loaderId).innerText = aiText;
+            } catch (error) {
+                document.getElementById(loaderId).innerText = "System Fault: Unable to reach core. Verify API Key and connection.";
+            }
+        }
+
+        function addMessage(role, text) {
+            const id = 'm-' + Math.random().toString(36).substr(2, 9);
+            const chatWindow = document.getElementById('chat-window');
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            msgDiv.innerHTML = `
+                <div class="avatar ${role}-avatar">${role === 'user' ? 'U' : 'NX'}</div>
+                <div class="content" id="${id}">${text}</div>
+            `;
+            
+            chatWindow.appendChild(msgDiv);
             chatWindow.scrollTop = chatWindow.scrollHeight;
             return id;
         }
 
-        submitBtn.addEventListener('click', processNexusQuery);
-        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') processNexusQuery(); });
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
-
 </html>
